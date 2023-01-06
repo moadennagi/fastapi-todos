@@ -1,0 +1,11 @@
+# databases 
+*.sqlite
+
+# __pycache__
+__pycache__
+
+# tests
+*.pytest_cache
+.coverage
+
+venv
