@@ -1,8 +1,8 @@
 ""
 import pytest
-
+from api.todos.models import Todo
 from sqlalchemy.orm import Session
-from api.models import Todo
+
 
 @pytest.fixture
 def tasks(session: Session):

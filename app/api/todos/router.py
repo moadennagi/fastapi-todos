@@ -1,10 +1,10 @@
 from typing import Union
 
+from api.dependencies import get_session
+from api.todos.models import Todo
+from api.todos.schemas import CreateTodo, UpdateTodo
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
-from api.dependencies import get_session
-from api.models import Todo, CreateTodo, UpdateTodo
 
 router = APIRouter(
     prefix='/todos',
@@ -13,6 +13,7 @@ router = APIRouter(
 
 @router.get('/')
 def todos(completed: Union[bool, None] = None, session: Session = Depends(get_session)) -> list:
+    print(globals())
     todos = Todo.all(session)
     if completed is not None:
         todos = filter(lambda x: x.completed == completed, todos)
