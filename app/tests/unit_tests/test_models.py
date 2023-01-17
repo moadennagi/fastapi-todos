@@ -1,8 +1,8 @@
 # test CRUDMixin
 import pytest
-
-from sqlalchemy import select, delete
-from api.models import Todo, CreateTodo
+from api.todos.models import Todo
+from api.todos.schemas import CreateTodo
+from sqlalchemy import delete, select
 
 
 @pytest.fixture

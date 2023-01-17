@@ -1,6 +1,9 @@
-from db.db import SessionLocal
+from typing import Generator
 
-def get_session():
+from db import SessionLocal
+
+
+def get_session() -> Generator:
     try:
         session = SessionLocal()
         yield session

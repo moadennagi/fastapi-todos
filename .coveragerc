@@ -1,0 +1,5 @@
+[run]
+omit = app/tests/*
+
+[html]
+directory = report
