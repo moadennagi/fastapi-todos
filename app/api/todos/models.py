@@ -19,3 +19,4 @@ class Todo(Base, CRUDMixin):
     def save(self, session: Session):
         session.add(self)
         session.commit()
+        return self

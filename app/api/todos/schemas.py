@@ -12,3 +12,11 @@ class CreateTodo(TodoBase):
 
 class UpdateTodo(TodoBase):
     pass
+
+class TodoSchema(TodoBase):
+    id: int
+    completed: bool
+    user_id: int
+
+    class Config:
+        orm_mode = True

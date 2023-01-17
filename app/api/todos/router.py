@@ -2,18 +2,24 @@ from typing import Union
 
 from api.dependencies import get_session
 from api.todos.models import Todo
+from api.todos.schemas import TodoSchema
+from api.auth.dependencies import get_current_user
+from api.auth.schemas import UserSchema
 from api.todos.schemas import CreateTodo, UpdateTodo
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 router = APIRouter(
-    prefix='/todos',
+    prefix='/api/todos',
     tags=['todos',],
 )
 
 @router.get('/')
-def todos(completed: Union[bool, None] = None, session: Session = Depends(get_session)) -> list:
-    print(globals())
+def todos(
+    completed: Union[bool, None] = None,
+    session: Session = Depends(get_session),
+    current_user: UserSchema = Depends(get_current_user)
+) -> list[TodoSchema]:
     todos = Todo.all(session)
     if completed is not None:
         todos = filter(lambda x: x.completed == completed, todos)
@@ -21,7 +27,11 @@ def todos(completed: Union[bool, None] = None, session: Session = Depends(get_se
     return todos
 
 @router.get('/{todo_id}')
-def todo(todo_id: int, session: Session = Depends(get_session)):
+def todo(
+    todo_id: int,
+    session: Session = Depends(get_session),
+    current_user: UserSchema = Depends(get_current_user)
+) -> TodoSchema:
     todos = Todo.get(todo_id, session=session)
     if todos:
         todo = todos[0]
@@ -30,16 +40,25 @@ def todo(todo_id: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404)
     return response
 
-
 @router.post('/')
-def create(todo_data: CreateTodo, session: Session = Depends(get_session)):
+def create(
+    todo_data: CreateTodo,
+    session: Session = Depends(get_session),
+    current_user: UserSchema = Depends(get_current_user)
+) -> TodoSchema:
     data = dict(todo_data)
     todo = Todo(**data)
     todo.save(session)
+    todo_schema.from_orm(todo)
     return todo
 
 @router.put('/{todo_id}')
-def update(todo_id: int, todo_data: UpdateTodo, session: Session = Depends(get_session)):
+def update(
+    todo_id: int,
+    todo_data: UpdateTodo,
+    session: Session = Depends(get_session),
+    current_user: UserSchema = Depends(get_current_user)
+) -> TodoSchema:
     todo = Todo.get(todo_id, session)
     if not todo:
         raise HTTPException(status_code=404)
@@ -48,7 +67,11 @@ def update(todo_id: int, todo_data: UpdateTodo, session: Session = Depends(get_s
     return res
 
 @router.delete('/{todo_id}')
-def delete(todo_id: int, session: Session = Depends(get_session)):
+def delete(
+    todo_id: int,
+    session: Session = Depends(get_session),
+    current_user: UserSchema = Depends(get_current_user)
+) -> TodoSchema:
     todo = Todo.get(todo_id, session)
     if not todo:
         raise HTTPException(404)

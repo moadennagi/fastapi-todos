@@ -2,11 +2,12 @@ from api.exceptions import ObjectNotFound
 from pydantic import BaseModel
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
+from db import SessionLocal
 
 
 class CRUDMixin:
-    id: int
-    __tablename__: str
+    """Crud queries
+    """
 
     @classmethod
     def get(cls, pk: int, session: Session):
